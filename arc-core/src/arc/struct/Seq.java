@@ -350,45 +350,33 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return false;
     }
 
-    public Seq<T> and(T value){
-        add(value);
-        return this;
-    }
-
-    public Seq<T> and(Seq<T> value){
-        addAll(value);
-        return this;
-    }
-
-    public Seq<T> and(T[] value){
-        addAll(value);
-        return this;
-    }
-
-    public void add(T value){
+    public Seq<T> add(T value){
         T[] items = this.items;
         if(size == items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
         items[size++] = value;
+        return this;
     }
 
-    public void add(T value1, T value2){
+    public Seq<T> add(T value1, T value2){
         T[] items = this.items;
         if(size + 1 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
         items[size] = value1;
         items[size + 1] = value2;
         size += 2;
+        return this;
     }
 
-    public void add(T value1, T value2, T value3){
+    public Seq<T> add(T value1, T value2, T value3){
         T[] items = this.items;
         if(size + 2 >= items.length) items = resize(Math.max(8, (int)(size * 1.75f)));
         items[size] = value1;
         items[size + 1] = value2;
         items[size + 2] = value3;
         size += 3;
+        return this;
     }
 
-    public void add(T value1, T value2, T value3, T value4){
+    public Seq<T> add(T value1, T value2, T value3, T value4){
         T[] items = this.items;
         if(size + 3 >= items.length) items = resize(Math.max(8, (int)(size * 1.8f))); // 1.75 isn't enough when size=5.
         items[size] = value1;
@@ -396,6 +384,17 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         items[size + 2] = value3;
         items[size + 3] = value4;
         size += 4;
+        return this;
+    }
+
+    public Seq<T> add(Seq<? extends T> array){
+        addAll(array.items, 0, array.size);
+        return this;
+    }
+
+    public Seq<T> add(T[] array){
+        addAll(array, 0, array.length);
+        return this;
     }
 
     public Seq<T> addAll(Seq<? extends T> array){
@@ -907,7 +906,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
         return Select.instance().selectIndex(items, comparator, kthLowest, size);
     }
 
-    public void reverse(){
+    public Seq<T> reverse(){
         T[] items = this.items;
         for(int i = 0, lastIndex = size - 1, n = size / 2; i < n; i++){
             int ii = lastIndex - i;
@@ -915,9 +914,11 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
+
+        return this;
     }
 
-    public void shuffle(){
+    public Seq<T> shuffle(){
         T[] items = this.items;
         for(int i = size - 1; i >= 0; i--){
             int ii = Mathf.random(i);
@@ -925,17 +926,7 @@ public class Seq<T> implements Iterable<T>, Eachable<T>{
             items[i] = items[ii];
             items[ii] = temp;
         }
-    }
 
-    /** @return this Seq, reversed. */
-    public Seq<T> reversed(){
-        reverse();
-        return this;
-    }
-
-    /** @return this Seq, shuffled. */
-    public Seq<T> shuffled(){
-        shuffle();
         return this;
     }
 
